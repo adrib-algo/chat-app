@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3b82f6">
     <title>Chat App</title>
 
     <!-- Mobile viewport fix -->
@@ -161,6 +163,15 @@
         // Auto scroll
         messages.scrollTop = messages.scrollHeight;
     });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(() => console.log('Service Worker Registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        });
+
+    }
 </script>
 
 </body>
