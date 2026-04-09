@@ -40,15 +40,28 @@
             padding: 10px;
             margin: 0;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         #messages li {
-            background: #334155;
             padding: 10px;
             margin: 5px 0;
             border-radius: 10px;
             max-width: 75%;
             word-wrap: break-word;
+        }
+
+        /* LEFT (others) */
+        .other-message {
+            align-self: flex-start;
+            background: #334155;
+        }
+
+        /* RIGHT (me) */
+        .my-message {
+            align-self: flex-end;
+            background: #3b82f6;
         }
 
         .input-area {
@@ -105,16 +118,36 @@
     const input = document.getElementById("input");
     const messages = document.getElementById("messages");
 
+    let myId = "";
+
+    // Get your socket id
+    socket.on("connect", () => {
+        myId = socket.id;
+        console.log("My ID:", myId);
+    });
+
     function sendMessage() {
-        const msg = input.value;
+        const msg = input.value.trim();
+        if (msg === "") return;
+
         socket.emit("chat message", msg);
         input.value = "";
     }
 
-    socket.on("chat message", (msg) => {
+    socket.on("chat message", (data) => {
         const li = document.createElement("li");
-        li.textContent = msg;
+        li.textContent = data.text;
+
+        if (data.sender === myId) {
+            li.classList.add("my-message");
+        } else {
+            li.classList.add("other-message");
+        }
+
         messages.appendChild(li);
+
+        // Auto scroll
+        messages.scrollTop = messages.scrollHeight;
     });
 </script>
 

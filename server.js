@@ -9,16 +9,15 @@ const io = new Server(server);
 // Serve frontend
 app.use(express.static("public"));
 
-// Socket connection
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    // Receive message
     socket.on("chat message", (msg) => {
-        console.log("Message:", msg);
-
-        // Send to all users
-        io.emit("chat message", msg);
+        // Send message + sender id
+        io.emit("chat message", {
+            text: msg,
+            sender: socket.id
+        });
     });
 
     socket.on("disconnect", () => {
