@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 550px;
+            background: #1e293b;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 15px;
+            background: #3b82f6;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #messages {
+            flex: 1;
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        #messages li {
+            background: #334155;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background: #020617;
+        }
+
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            background: #1e293b;
+            color: white;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+    
+    <div class="header">💬 Real-time Chat</div>
+
+    <ul id="messages"></ul>
+
+    <div class="input-area">
+        <input id="input" autocomplete="off" placeholder="Type message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
+
+    function sendMessage() {
+        const msg = input.value;
+        socket.emit("chat message", msg);
+        input.value = "";
+    }
+
+    socket.on("chat message", (msg) => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        messages.appendChild(li);
+    });
+</script>
+
+</body>
+</html>
